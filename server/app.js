@@ -23,8 +23,8 @@ app.use('/ping', function (req, res) {
 
 app.use('/api/v1/user', userRoutes);
 
-app.all('*', function (req, res) {
-    return res.status(404).send('OOPS!! 404 PAGE NOT FOUND');
-});
+// app.all('*', function (req, res) {
+//     return res.status(404).send('OOPS!! 404 PAGE NOT FOUND');
+// });
 app.use(errorMiddleware);
 export default app;

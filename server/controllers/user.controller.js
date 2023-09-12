@@ -1,10 +1,15 @@
-import AppError from '../utils/error.util';
+import AppError from '../utils/error.util.js';
 import User from '../models/user.model.js';
+const cookieOptions = {
+    maxAge: 24 * 60 * 60 * 1000,
+    httpOnly: true,
+    secure: true,
+};
+
 const handleRegister = async (req, res, next) => {
     const { fullName, email, password } = req.body;
     if (!fullName || !email || !password) {
         return next(new AppError('All fields are required', 400));
-        //! Tomorrow, I will begin from this point.
     }
 
     const userExits = await User.findOne({ email });
@@ -30,6 +35,18 @@ const handleRegister = async (req, res, next) => {
     // TODO: File upload:
 
     await user.save();
+
+    user.password = undefined;
+
+    const token = await user.generateJWTToken();
+
+    res.cookie('token', token, cookieOptions);
+
+    return res.status(201).json({
+        success: true,
+        message: 'User registered successfully',
+        user,
+    });
 };
 
 const handleLogin = (req, res) => {};
