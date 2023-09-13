@@ -8,14 +8,11 @@ const cookieOptions = {
 
 const handleRegister = async (req, res, next) => {
     const { fullName, email, password } = req.body;
-    if (!fullName || !email || !password) {
+    if (!fullName || !email || !password)
         return next(new AppError('All fields are required', 400));
-    }
 
     const userExits = await User.findOne({ email });
-    if (userExits) {
-        return next(new AppError('Email already exits', 400));
-    }
+    if (userExits) return next(new AppError('Email already exits', 400));
 
     const user = await User.create({
         fullName,
@@ -26,11 +23,10 @@ const handleRegister = async (req, res, next) => {
             secure_url: 'dummy url',
         },
     });
-    if (!user) {
+    if (!user)
         return next(
             new AppError('User registration failed, Please try again', 400)
         );
-    }
 
     // TODO: File upload:
 
@@ -38,7 +34,7 @@ const handleRegister = async (req, res, next) => {
 
     user.password = undefined;
 
-    const token = await user.generateJWTToken();
+    const token = user.generateJWTToken();
 
     res.cookie('token', token, cookieOptions);
 
@@ -49,7 +45,28 @@ const handleRegister = async (req, res, next) => {
     });
 };
 
-const handleLogin = (req, res) => {};
+const handleLogin = async (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password)
+        return next(new AppError('All fields are required', 400));
+
+    const user = await User.findOne({ email }).select('+password');
+    if (!user || !user.comparePassword(password))
+        return next(new AppError('Email and password do not match', 400));
+
+    user.password = undefined;
+
+    const token = user.generateJWTToken();
+
+    res.cookie('token', token, cookieOptions);
+
+    return res.status(200).json({
+        success: true,
+        message: 'User loggedIn successfully',
+        user,
+    });
+};
 const handleLogout = (req, res) => {};
 const handleProfile = (req, res) => {};
 
