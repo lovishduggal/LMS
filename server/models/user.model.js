@@ -52,11 +52,11 @@ userSchema.pre('save', async function (next) {
         return next();
     }
     this.password = await bcrypt.hash(this.password, 10);
-    return next();
+    next();
 });
 
 userSchema.methods = {
-    generateJWTToken: function () {
+    generateJWTToken() {
         return jwt.sign(
             {
                 id: this.id,
@@ -71,8 +71,11 @@ userSchema.methods = {
             }
         );
     },
+    async comparePassword(plainTextPassword) {
+        return await bcrypt.compare(plainTextPassword, this.password);
+    },
 };
+
 const user = model('user', userSchema);
-console.log(user);
 
 export default user;

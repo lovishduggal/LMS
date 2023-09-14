@@ -6,10 +6,11 @@ import {
     handleLogout,
     handleProfile,
 } from '../controllers/user.controller.js';
+import { isLoggedIn } from '../middlewares/auth.middleware.js';
 
 router.post('/register', handleRegister);
 router.post('/login', handleLogin);
 router.get('/logout', handleLogout);
-router.get('/me', handleProfile);
+router.get('/me', isLoggedIn, handleProfile);
 
 export default router;
