@@ -28,7 +28,7 @@ const userSchema = new Schema(
             minLength: [8, 'Password must be at least 8 characters'],
             select: true,
         },
-        avator: {
+        avatar: {
             public_id: {
                 type: String,
             },
