@@ -102,6 +102,7 @@ const handleLogin = async (req, res, next) => {
         return next(new AppError(error.message, 500));
     }
 };
+
 const handleLogout = (req, res) => {
     res.cookie('token', null, {
         secure: true,
@@ -114,6 +115,7 @@ const handleLogout = (req, res) => {
         message: 'User loggedOut successfully',
     });
 };
+
 const handleProfile = async (req, res, next) => {
     try {
         const UserId = req.user.id;
@@ -129,4 +131,39 @@ const handleProfile = async (req, res, next) => {
     }
 };
 
-export { handleRegister, handleLogin, handleLogout, handleProfile };
+const handleForgot = async (req, res, next) => {
+    const { email } = req.body;
+    if (!email) return next(new AppError('Email  is required', 400));
+
+    const user = await User.findOne({ email });
+    if (!user) return next(new AppError('Email is nor registered', 400));
+
+    const resetToken = user.generatePasswordResetToken();
+    await user.save();
+    // const resetPasswordURL = `${process.env.FRONTEND_URL}/reset/${resetToken}`; //! we use this when client is ready.
+    const resetPasswordURL = `/api/v1/user/reset/${resetToken}`;
+    try {
+        await sendEmail(email, subject, message);
+        return res.status(200).json({
+            success: true,
+            message: `Reset password token has been sent to ${email} successfully`,
+        });
+    } catch (error) {
+        user.forgotPasswordToken = undefined;
+        user.forgotPasswordExpiry = undefined;
+        await user.save();
+
+        return next(new AppError(error.message, 500));
+    }
+};
+
+const handleReset = (req, res, next) => {};
+
+export {
+    handleRegister,
+    handleLogin,
+    handleLogout,
+    handleProfile,
+    handleForgot,
+    handleReset,
+};
