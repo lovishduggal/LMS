@@ -2,6 +2,7 @@ import AppError from '../utils/error.util.js';
 import User from '../models/user.model.js';
 import cloudinary from 'cloudinary';
 import fs from 'fs';
+import sendMail from '../utils/sendEmail.js';
 const cookieOptions = {
     maxAge: 24 * 60 * 60 * 1000,
     httpOnly: true,
@@ -133,6 +134,7 @@ const handleProfile = async (req, res, next) => {
 
 const handleForgot = async (req, res, next) => {
     const { email } = req.body;
+    console.log(email);
     if (!email) return next(new AppError('Email  is required', 400));
 
     const user = await User.findOne({ email });
@@ -140,10 +142,12 @@ const handleForgot = async (req, res, next) => {
 
     const resetToken = user.generatePasswordResetToken();
     await user.save();
-    // const resetPasswordURL = `${process.env.FRONTEND_URL}/reset/${resetToken}`; //! we use this when client is ready.
-    const resetPasswordURL = `/api/v1/user/reset/${resetToken}`;
+
+    const resetPasswordURL = `${process.env.FRONTEND_URL}/reset/${resetToken}`;
+    const subject = 'Reset Password';
+    const message = `You can reset password by clicking <a href="${resetPasswordURL}" target="_blank">Here</a>`;
     try {
-        await sendEmail(email, subject, message);
+        sendMail(email, subject, message);
         return res.status(200).json({
             success: true,
             message: `Reset password token has been sent to ${email} successfully`,
@@ -157,7 +161,12 @@ const handleForgot = async (req, res, next) => {
     }
 };
 
-const handleReset = (req, res, next) => {};
+const handleReset = (req, res, next) => {
+    return res.status(200).json({
+        success: true,
+        message: 'Password is reset successfully',
+    });
+};
 
 export {
     handleRegister,
