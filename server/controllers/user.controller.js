@@ -3,6 +3,8 @@ import User from '../models/user.model.js';
 import cloudinary from 'cloudinary';
 import fs from 'fs';
 import sendMail from '../utils/sendEmail.js';
+import crypto from 'crypto';
+import { log } from 'console';
 const cookieOptions = {
     maxAge: 24 * 60 * 60 * 1000,
     httpOnly: true,
@@ -81,24 +83,25 @@ const handleRegister = async (req, res, next) => {
 const handleLogin = async (req, res, next) => {
     try {
         const { email, password } = req.body;
-
+        console.log(email, password);
         if (!email || !password)
             return next(new AppError('All fields are required', 400));
+        console.log(email, password);
 
         const user = await User.findOne({ email }).select('+password');
-        if (!user || !user.comparePassword(password))
+        const isPasswordMatched = await user.comparePassword(password);
+        if (user && isPasswordMatched) {
+            user.password = undefined;
+            const token = user.generateJWTToken();
+            res.cookie('token', token, cookieOptions);
+            return res.status(200).json({
+                success: true,
+                message: 'User loggedIn successfully',
+                user,
+            });
+        } else {
             return next(new AppError('Email and password do not match', 400));
-
-        user.password = undefined;
-
-        const token = user.generateJWTToken();
-        res.cookie('token', token, cookieOptions);
-
-        return res.status(200).json({
-            success: true,
-            message: 'User loggedIn successfully',
-            user,
-        });
+        }
     } catch (error) {
         return next(new AppError(error.message, 500));
     }
@@ -134,7 +137,6 @@ const handleProfile = async (req, res, next) => {
 
 const handleForgot = async (req, res, next) => {
     const { email } = req.body;
-    console.log(email);
     if (!email) return next(new AppError('Email  is required', 400));
 
     const user = await User.findOne({ email });
@@ -161,7 +163,33 @@ const handleForgot = async (req, res, next) => {
     }
 };
 
-const handleReset = (req, res, next) => {
+const handleReset = async (req, res, next) => {
+    const { resetToken } = req.params;
+
+    const { password } = req.body;
+    if (!password) return next(new AppError('Password field required', 400));
+
+    const forgotPasswordToken = crypto
+        .createHash('sha256')
+        .update(resetToken)
+        .digest('hex');
+
+    const user = await User.findOne({
+        forgotPasswordToken,
+        forgotPasswordExpiry: { $gt: Date.now() },
+    });
+    console.log('user', user);
+
+    if (!user)
+        return next(
+            new AppError('Token is invalid or expired, Please try again', 400)
+        );
+
+    user.password = password;
+    user.forgotPasswordToken = undefined;
+    user.forgotPasswordExpiry = undefined;
+    await user.save();
+
     return res.status(200).json({
         success: true,
         message: 'Password is reset successfully',

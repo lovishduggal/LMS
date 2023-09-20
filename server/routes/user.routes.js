@@ -16,6 +16,6 @@ router.post('/login', handleLogin);
 router.get('/logout', handleLogout);
 router.get('/me', isLoggedIn, handleProfile);
 router.post('/forgot', handleForgot);
-router.get('/reset/:token', handleReset);
+router.get('/reset/:resetToken', handleReset);
 
 export default router;

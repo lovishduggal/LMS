@@ -54,7 +54,7 @@ userSchema.pre('save', async function (next) {
         return next();
     }
     this.password = await bcrypt.hash(this.password, 10);
-    next();
+    return next();
 });
 
 userSchema.methods = {
@@ -74,7 +74,9 @@ userSchema.methods = {
         );
     },
     async comparePassword(plainTextPassword) {
-        return await bcrypt.compare(plainTextPassword, this.password);
+        const result = await bcrypt.compare(plainTextPassword, this.password);
+        console.log(result);
+        return result;
     },
     generatePasswordResetToken() {
         const resetToken = crypto.randomBytes(20).toString('hex');
