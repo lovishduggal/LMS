@@ -74,9 +74,7 @@ userSchema.methods = {
         );
     },
     async comparePassword(plainTextPassword) {
-        const result = await bcrypt.compare(plainTextPassword, this.password);
-        console.log(result);
-        return result;
+        return await bcrypt.compare(plainTextPassword, this.password);
     },
     generatePasswordResetToken() {
         const resetToken = crypto.randomBytes(20).toString('hex');

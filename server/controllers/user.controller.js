@@ -196,6 +196,30 @@ const handleReset = async (req, res, next) => {
     });
 };
 
+async function handleChangePassword(req, res, next) {
+    const { oldPassword, newPassword } = req.body;
+    const { id } = req.user;
+
+    if (!oldPassword || !newPassword)
+        return next(new AppError('All fields are required', 400));
+
+    const user = await User.findById(id).select('+password');
+    if (!user) return next(new AppError('User does not exit', 400));
+
+    const isPasswordMatched = await user.comparePassword(oldPassword);
+    if (!isPasswordMatched)
+        return next(new AppError('Invalid old password', 400));
+
+    user.password = newPassword;
+    await user.save();
+    user.password = undefined;
+
+    return res.status(200).json({
+        success: true,
+        message: 'Password changed successfully',
+    });
+}
+
 export {
     handleRegister,
     handleLogin,
@@ -203,4 +227,5 @@ export {
     handleProfile,
     handleForgot,
     handleReset,
+    handleChangePassword,
 };
