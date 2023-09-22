@@ -220,6 +220,50 @@ async function handleChangePassword(req, res, next) {
     });
 }
 
+async function handleUpdateProfile(req, res, next) {
+    const { fullName } = req.body;
+    const { id } = req.user;
+
+    const user = await User.findById(id);
+    if (!user) return next(new AppError('User does not exit', 400));
+
+    if (req.body.fullName) user.fullName = fullName;
+
+    if (req.file) {
+        try {
+            await cloudinary.v2.uploader.destroy(user.avatar.public_id);
+            const result = await cloudinary.v2.uploader.upload(req.file.path, {
+                folder: 'LMS',
+                width: 250,
+                height: 250,
+                gravity: 'faces',
+                crop: 'fill',
+            });
+            if (result) {
+                user.avatar.public_id = result.public_id;
+                user.avatar.secure_url = result.secure_url;
+
+                fs.rm(`uploads/${req.file.filename}`, (err) => {
+                    if (err) {
+                        throw err;
+                    }
+                });
+            }
+        } catch (error) {
+            return next(new AppError(error, 500));
+        }
+    }
+
+    await user.save();
+
+    return res.status(200).json({
+        success: true,
+        message: 'User details updated successfully',
+    });
+
+    return;
+}
+
 export {
     handleRegister,
     handleLogin,
@@ -228,4 +272,5 @@ export {
     handleForgot,
     handleReset,
     handleChangePassword,
+    handleUpdateProfile,
 };
