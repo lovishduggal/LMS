@@ -232,6 +232,7 @@ async function handleUpdateProfile(req, res, next) {
     if (req.file) {
         try {
             await cloudinary.v2.uploader.destroy(user.avatar.public_id);
+
             const result = await cloudinary.v2.uploader.upload(req.file.path, {
                 folder: 'LMS',
                 width: 250,
