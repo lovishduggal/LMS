@@ -1,19 +1,22 @@
+import { log } from 'console';
 import Course from '../models/course.model.js';
 import AppError from '../utils/error.util.js';
+import cloudinary from 'cloudinary';
+import fs from 'fs';
 
 const handleGetAllCourses = async function (req, res, next) {
     try {
         const courses = await Course.find({}).select('-lectures');
         if (!courses.length)
             return next(new AppError('Courses not found', 400));
+        return res.status(200).json({
+            success: true,
+            message: 'All courses',
+            courses,
+        });
     } catch (error) {
         return next(new AppError(error.message, 500));
     }
-    return res.status(200).json({
-        success: true,
-        message: 'All courses',
-        courses,
-    });
 };
 const handleGetLecturesByCourseId = async function (req, res, next) {
     try {
@@ -30,4 +33,60 @@ const handleGetLecturesByCourseId = async function (req, res, next) {
     }
 };
 
-export { handleGetAllCourses, handleGetLecturesByCourseId };
+const handleCreateCourse = async function (req, res, next) {
+    const { title, description, category, createdBy } = req.body;
+    if (!title || !description || !category || !createdBy)
+        return next(new AppError('All fields are required', 400));
+
+    const course = await Course.create({
+        title,
+        description,
+        category,
+        createdBy,
+        thumbnail: {
+            public_id: 'dummy id',
+            secure_url: 'dummy url',
+        },
+    });
+    if (!course)
+        return next(
+            new AppError('Course could not created, Please try again', 500)
+        );
+
+    if (req.file) {
+        try {
+            const result = await cloudinary.v2.uploader.upload(req.file.path, {
+                folder: 'LMS',
+            });
+            console.log('course', result);
+            if (result) {
+                course.thumbnail.public_id = result.public_id;
+                course.thumbnail.secure_url = result.secure_url;
+                fs.rm(`uploads/${req.file.filename}`, (err) => {
+                    if (err) {
+                        throw err;
+                    }
+                });
+            }
+        } catch (error) {
+            new AppError(error.message, 500);
+        }
+    }
+
+    await course.save();
+
+    return res.status(200).json({
+        success: true,
+        message: 'Course created successfully',
+        course,
+    });
+};
+const handleUpdateCourse = async function () {};
+const handleDeleteCourse = async function () {};
+export {
+    handleGetAllCourses,
+    handleGetLecturesByCourseId,
+    handleCreateCourse,
+    handleUpdateCourse,
+    handleDeleteCourse,
+};

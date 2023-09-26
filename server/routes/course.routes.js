@@ -3,10 +3,22 @@ const router = Router();
 import {
     handleGetAllCourses,
     handleGetLecturesByCourseId,
+    handleCreateCourse,
+    handleUpdateCourse,
+    handleDeleteCourse,
 } from '../controllers/course.controller.js';
 import { isLoggedIn } from '../middlewares/auth.middleware.js';
+import upload from '../middlewares/multer.middleware.js';
 
-router.get('/', handleGetAllCourses);
-router.get('/:id', isLoggedIn, handleGetLecturesByCourseId);
+router
+    .route('/')
+    .get(handleGetAllCourses)
+    .post(upload.single('thumbnail'), handleCreateCourse);
+
+router
+    .route('/:id')
+    .get(isLoggedIn, handleGetLecturesByCourseId)
+    .put(handleUpdateCourse)
+    .delete(handleDeleteCourse);
 
 export default router;

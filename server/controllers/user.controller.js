@@ -58,7 +58,7 @@ const handleRegister = async (req, res, next) => {
                     });
                 }
             } catch (error) {
-                return next(new AppError(error, 500));
+                return next(new AppError(error.message, 500));
             }
         }
 
