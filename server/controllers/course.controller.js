@@ -3,6 +3,7 @@ import Course from '../models/course.model.js';
 import AppError from '../utils/error.util.js';
 import cloudinary from 'cloudinary';
 import fs from 'fs';
+import { request } from 'http';
 
 const handleGetAllCourses = async function (req, res, next) {
     try {
@@ -81,12 +82,52 @@ const handleCreateCourse = async function (req, res, next) {
         course,
     });
 };
-const handleUpdateCourse = async function () {};
-const handleDeleteCourse = async function () {};
+const handleUpdateCourse = async function (req, res, next) {
+    try {
+        const { id } = req.params;
+        const course = await Course.findByIdAndUpdate(
+            id,
+            {
+                $set: req.body,
+            },
+            {
+                runValidators: true,
+            }
+        );
+        if (!course) new AppError('Course with given id does not exist', 400);
+
+        console.log(course);
+        return res.status(200).json({
+            success: true,
+            message: 'Course with given id updated successfully',
+            course,
+        });
+    } catch (error) {
+        new AppError(error.message, 500);
+    }
+};
+const handleDeleteCourse = async function (req, res, next) {
+    try {
+        const { id } = req.params;
+        const course = await Course.findByIdAndDelete(id);
+        if (!course) new AppError('Course with given id does not exist', 400);
+
+        return res.status(200).json({
+            success: true,
+            message: 'Course with given id deleted successfully',
+            course,
+        });
+    } catch (error) {
+        new AppError(error.message, 500);
+    }
+};
+
+const handleLectureToCourseById = async function (req, res, next) {};
 export {
     handleGetAllCourses,
     handleGetLecturesByCourseId,
     handleCreateCourse,
     handleUpdateCourse,
     handleDeleteCourse,
+    handleLectureToCourseById,
 };

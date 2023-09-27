@@ -6,19 +6,26 @@ import {
     handleCreateCourse,
     handleUpdateCourse,
     handleDeleteCourse,
+    handleLectureToCourseById,
 } from '../controllers/course.controller.js';
-import { isLoggedIn } from '../middlewares/auth.middleware.js';
+import { authorizedRoles, isLoggedIn } from '../middlewares/auth.middleware.js';
 import upload from '../middlewares/multer.middleware.js';
 
 router
     .route('/')
     .get(handleGetAllCourses)
-    .post(upload.single('thumbnail'), handleCreateCourse);
+    .post(
+        isLoggedIn,
+        authorizedRoles('ADMIN'),
+        upload.single('thumbnail'),
+        handleCreateCourse
+    );
 
 router
     .route('/:id')
     .get(isLoggedIn, handleGetLecturesByCourseId)
-    .put(handleUpdateCourse)
-    .delete(handleDeleteCourse);
+    .post(isLoggedIn, authorizedRoles('ADMIN'), handleLectureToCourseById)
+    .put(isLoggedIn, authorizedRoles('ADMIN'), handleUpdateCourse)
+    .delete(isLoggedIn, authorizedRoles('ADMIN'), handleDeleteCourse);
 
 export default router;
