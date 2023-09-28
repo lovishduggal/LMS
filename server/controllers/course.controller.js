@@ -59,7 +59,6 @@ const handleCreateCourse = async function (req, res, next) {
             const result = await cloudinary.v2.uploader.upload(req.file.path, {
                 folder: 'LMS',
             });
-            console.log('course', result);
             if (result) {
                 course.thumbnail.public_id = result.public_id;
                 course.thumbnail.secure_url = result.secure_url;
@@ -96,7 +95,6 @@ const handleUpdateCourse = async function (req, res, next) {
         );
         if (!course) new AppError('Course with given id does not exist', 400);
 
-        console.log(course);
         return res.status(200).json({
             success: true,
             message: 'Course with given id updated successfully',
@@ -122,7 +120,66 @@ const handleDeleteCourse = async function (req, res, next) {
     }
 };
 
-const handleLectureToCourseById = async function (req, res, next) {};
+const handleLectureToCourseById = async function (req, res, next) {
+    const { title, description } = req.body;
+    const { id } = req.params;
+    if (!title || !description)
+        return next(new AppError('All fields are required', 400));
+
+    try {
+        const course = await Course.findById(id);
+        if (!course)
+            return next(
+                new AppError('Course does not exist, Please try again', 500)
+            );
+
+        const lectureData = {
+            title,
+            description,
+            lecture: {
+                public_id: 'dummy',
+                secure_url: 'dummy',
+            },
+        };
+
+        if (req.file) {
+            try {
+                const result = await cloudinary.v2.uploader.upload(
+                    req.file.path,
+                    {
+                        folder: 'LMS',
+                        resource_type: 'video',
+                    }
+                );
+                if (result) {
+                    lectureData.lecture.public_id = result.public_id;
+                    lectureData.lecture.secure_url = result.secure_url;
+                    fs.rm(`uploads/${req.file.filename}`, (err) => {
+                        if (err) {
+                            throw err;
+                        }
+                    });
+                }
+            } catch (error) {
+                new AppError(error.message, 500);
+            }
+        }
+
+        course.lectures.push(lectureData);
+        course.numbersOfLectures = course.lectures.length;
+        await course.save();
+
+        return res.status(200).json({
+            success: true,
+            message: 'Lecture added in Course with given id successfully',
+            course,
+        });
+    } catch (error) {
+        return next(
+            new AppError('Course does not exist, Please try again', 500)
+        );
+    }
+};
 export {
     handleGetAllCourses,
     handleGetLecturesByCourseId,

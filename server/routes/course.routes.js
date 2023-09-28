@@ -24,7 +24,12 @@ router
 router
     .route('/:id')
     .get(isLoggedIn, handleGetLecturesByCourseId)
-    .post(isLoggedIn, authorizedRoles('ADMIN'), handleLectureToCourseById)
+    .post(
+        isLoggedIn,
+        authorizedRoles('ADMIN'),
+        upload.single('lecture'),
+        handleLectureToCourseById
+    )
     .put(isLoggedIn, authorizedRoles('ADMIN'), handleUpdateCourse)
     .delete(isLoggedIn, authorizedRoles('ADMIN'), handleDeleteCourse);
 
