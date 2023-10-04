@@ -2,7 +2,7 @@ import AppError from '../utils/error.util.js';
 import Payment from '../models/payment.model.js';
 import User from '../models/user.model.js';
 import { razorpay } from '../server.js';
-
+import crypto from 'crypto';
 const handleGetRazorpayApiKey = (req, res) => {
     res.status(200).json({
         success: true,
@@ -43,11 +43,74 @@ const handleBuySubscription = async (req, res, next) => {
     }
 };
 
-const handleVerifySubscription = (req, res, next) => {};
+const handleVerifySubscription = async (req, res, next) => {
+    const { id } = req.user;
+    const {
+        razorpay_payment_id,
+        razorpay_subscription_id,
+        razorpay_signature,
+    } = req.body;
+    try {
+        const user = await User.findById(id);
+        if (!user) {
+            return next('Unauthorized, Please Login ');
+        }
 
-const handleCancelSubscription = (req, res) => {};
+        const subscriptionId = user.razorpay_subscription_id;
 
-const handleAllPayments = (req, res) => {};
+        const generatedSignature = crypto
+            .createHmac('sha256', process.env.RAZORPAY_SECRET)
+            .update(`${razorpay_payment_id}| ${subscriptionId}`)
+            .digest('hex');
+
+        if (generatedSignature !== razorpay_signature) {
+            return next(
+                new AppError('Payment is not verified, Please try again', 400)
+            );
+        }
+
+        await Payment.create({
+            razorpay_payment_id,
+            razorpay_subscription_id,
+            razorpay_signature,
+        });
+        user.subscription.status = 'active';
+        await user.save();
+
+        return res.status(200).json({
+            success: true,
+            message: 'Payment verified successfully',
+        });
+    } catch (error) {
+        return next(new AppError(error.message, 500));
+    }
+};
+
+const handleCancelSubscription = async (req, res, next) => {
+    const { id } = req.user;
+    try {
+        const user = await User.findById(id);
+        if (!user) return next(new AppError('Unauthorized Please Login', 400));
+
+        if (user.role === 'ADMIN')
+            return next(
+                new AppError('Admin cannot purchase a subscription', 400)
+            );
+
+        const subscriptionId = user.subscription.id;
+        const cancelSubscription = await razorpay.subscriptions.cancel(
+            subscriptionId
+        );
+        user.subscription.status = cancelSubscription.status;
+        await user.save();
+    } catch (error) {
+        return next(new AppError(error.message, 500));
+    }
+};
+
+const handleAllPayments = async (req, res) => {
+    //! This route and authorizeSubscribe middleware are assignments to us.
+};
 
 export {
     handleGetRazorpayApiKey,
