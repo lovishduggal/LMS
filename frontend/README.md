@@ -61,3 +61,35 @@ Add the Tailwind directives at the top of the 'index.css'
 ```text
     npm i react-redux react-router-dom react-icons react-chartjs-2 chart.js daisyui axios react-hot-toast @tailwindcss/line-clamp
 ```
+
+## Configure auto import sort esline
+
+Install simple import sore
+
+```text
+    npm i -D eslint-plugin-simple-import-sort
+```
+
+Add rule in .eslint.cjs
+
+```text
+    'simple-import-sort/imports': 'error'
+```
+
+Add simple-import sort plugin in .eslint.cjs
+
+```text
+        plugins: [..., 'simple-import-sort']
+```
+
+To enable auto import sort on file save in vscode
+
+- Open settings.json
+
+- add the following config
+
+```text
+ "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    }
+```

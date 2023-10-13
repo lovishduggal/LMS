@@ -1,7 +1,13 @@
-import './App.css';
+import toast, { Toaster } from 'react-hot-toast';
 
-function App() {
-    return <h1>lms</h1>;
-}
+const notify = () => toast('Here is your toast.');
 
+const App = () => {
+    return (
+        <div>
+            <button onClick={notify}>Make me a toast</button>
+            <Toaster />
+        </div>
+    );
+};
 export default App;
