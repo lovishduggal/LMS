@@ -33,7 +33,7 @@ run the server
 Intsall Tailwind
 
 ```text
-    npm install -D tailwindcss
+    npm install -D tailwindcss postcss autoprefixer
 ```
 
 Create tailwind config file
@@ -45,7 +45,7 @@ Create tailwind config file
 Add file extensions to config file in the content property
 
 ```text
-   "./src/**/*.{html,js,jsx}"
+ './index.html', './src/**/*.{html,js,jsx}'
 ```
 
 Add the Tailwind directives at the top of the 'index.css'
@@ -84,9 +84,9 @@ Add simple-import sort plugin in .eslint.cjs
 
 To enable auto import sort on file save in vscode
 
-- Open settings.json
+-   Open settings.json
 
-- add the following config
+-   add the following config
 
 ```text
  "editor.codeActionsOnSave": {
