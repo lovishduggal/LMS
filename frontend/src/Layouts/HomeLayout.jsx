@@ -1,5 +1,5 @@
 import { AiFillCloseCircle } from 'react-icons/ai';
-import { FiLogOut, FiMenu } from 'react-icons/fi';
+import { FiMenu } from 'react-icons/fi';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 function HomeLayout({ children }) {
@@ -31,7 +31,7 @@ function HomeLayout({ children }) {
         e.preventDefault();
         //dispatch logout action.
         // const res = await dispatch(logout());
-        //if(res?.payload?.success) naviagte('/);
+        //if(res?.payload?.success) naviagte('/');
     }
     return (
         <div className="min-h-[90vh]">
