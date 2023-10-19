@@ -7,7 +7,7 @@ function AboutUs() {
     return (
         <HomeLayout>
             <div className="pl-20 pt-20 flex flex-col text-white">
-                <div className="flex items-center gap-5 mx-10">
+                <div className="flex items-center justify-center gap-5 mx-10 h-[50vh]">
                     <section className="w-1/2 space-y-10">
                         <h1 className="text-5xl text-yellow-500 font-semibold">
                             {' '}
@@ -23,7 +23,7 @@ function AboutUs() {
                             wellness of mankind.{' '}
                         </p>
                     </section>
-                    <div className="w-1/2 ">
+                    <div className="w-1/2 flex items-center justify-center ">
                         <img
                             src={AMI}
                             alt="AMI"
@@ -31,7 +31,7 @@ function AboutUs() {
                         />
                     </div>
                 </div>
-                <div className="carousel w-1/2 my-16 m-auto">
+                <div className="carousel w-1/2 my-16 m-auto h-[50vh]">
                     {celebrities &&
                         celebrities.map((celebrity) => (
                             <CarouselSlide
