@@ -9,10 +9,10 @@ function CarouselSlide({
         <div
             id={`slide${slideNumber}`}
             className="carousel-item relative w-full">
-            <div className="flex flex-col items-center justify-center gap-4 px-[15%]">
+            <div className="flex flex-col items-center justify-center gap-4 w-full">
                 <img
                     src={image}
-                    className="object-cover rounded-full border-2 border-gray-400"
+                    className="w-[100px] h-[100px] rounded-full border-2 border-gray-400"
                 />
                 <p className="text-xl text-gray-200">{description}</p>
                 <h3 className="text-2xl font-semibold">{title}</h3>
