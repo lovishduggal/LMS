@@ -13,6 +13,7 @@ const cookieOptions = {
 
 const handleRegister = async (req, res, next) => {
     try {
+        console.log('hnji', req.body);
         const { fullName, email, password } = req.body;
         if (!fullName || !email || !password)
             return next(new AppError('All fields are required', 400));
