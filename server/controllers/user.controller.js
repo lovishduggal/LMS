@@ -116,7 +116,7 @@ const handleLogout = (req, res) => {
 
     return res.status(200).json({
         success: true,
-        message: 'User loggedOut successfully',
+        message: 'User logged out successfully',
     });
 };
 
