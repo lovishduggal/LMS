@@ -33,16 +33,16 @@ function Login() {
             toast.error('Invalid email address');
             return;
         }
-        if (
-            !loginData.password.match(
-                /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/
-            )
-        ) {
-            toast.error(
-                'Password  must be  8 or greater than 8 characters long. Password must contains a number,  lower case alphabet, upper case alphabet, and special character'
-            );
-            return;
-        }
+        // if (
+        //     !loginData.password.match(
+        //         /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/
+        //     )
+        // ) {
+        //     toast.error(
+        //         'Password  must be  8 or greater than 8 characters long. Password must contains a number,  lower case alphabet, upper case alphabet, and special character'
+        //     );
+        //     return;
+        // }
         const formData = { ...loginData };
         const res = await dispatch(loginAccount(formData));
         if (res?.payload?.success) navigate('/');
