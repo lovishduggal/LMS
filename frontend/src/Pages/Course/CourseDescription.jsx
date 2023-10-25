@@ -9,7 +9,7 @@ function CourseDescription() {
 
     return (
         <HomeLayout>
-            <div className="h-[90vh] w-[90%] mx-auto pt-12 px-20 flex flex-col items-center justify-center text-white">
+            <div className="h-[90vh] w-[90%] max-w-[1400px] mx-auto pt-12 px-20 flex flex-col items-center justify-center text-white">
                 <div className="grid grid-cols-2 gap-10 py-10 relative">
                     <div className="space-y-5">
                         <img
@@ -40,7 +40,7 @@ function CourseDescription() {
                         </div>
                     </div>
                     <div className="space-y-2 text-xl">
-                        <h1 className="text-3xl font-bold text-yellow-500 mb-5 text-center">
+                        <h1 className="text-3xl font-bold text-yellow-500 mb-5">
                             {state?.title}
                         </h1>
                         <p className="text-yellow-500">Course description: </p>

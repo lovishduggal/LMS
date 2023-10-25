@@ -37,7 +37,7 @@ function HomeLayout({ children }) {
         if (res?.payload?.success) navigate('/');
     }
     return (
-        <div className="min-h-[90vh]">
+        <div className="min-h-[90vh] ">
             <div className="drawer absolute left-0 z-50 w-fit">
                 <input
                     id="my-drawer"

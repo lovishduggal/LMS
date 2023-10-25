@@ -5,7 +5,7 @@ import HomeLayout from '../Layouts/HomeLayout';
 function HomePage() {
     return (
         <HomeLayout>
-            <div className="pt-16 text-white flex  flex-col items-center justify-center md:flex-row  gap-10 h-[90vh] w-[90%] m-auto text-center md:text-start">
+            <div className="pt-16 text-white flex  flex-col items-center justify-center md:flex-row  gap-10 h-[90vh] w-[90%] m-auto  max-w-[1400px] text-center md:text-start">
                 <div className="w-full h-full md:w-1/2 space-y-6 flex justify-center items-center">
                     <div className="space-y-6 ">
                         <h1 className="text-2xl  sm:text-3xl lg:text-5xl font-semibold">

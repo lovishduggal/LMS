@@ -6,7 +6,7 @@ import HomeLayout from '../Layouts/HomeLayout';
 function AboutUs() {
     return (
         <HomeLayout>
-            <div className="pl-20 pt-20 flex flex-col text-white h-[90vh] w-[90%] mx-auto">
+            <div className="pl-20 pt-20 flex flex-col text-white h-[90vh] w-[90%] mx-auto  max-w-[1400px]">
                 <div className="flex items-center justify-center gap-5 mx-10 h-[40vh]">
                     <section className="w-1/2 space-y-10">
                         <h1 className="text-5xl text-yellow-500 font-semibold">
