@@ -261,8 +261,26 @@ async function handleUpdateProfile(req, res, next) {
         success: true,
         message: 'User details updated successfully',
     });
+}
 
-    return;
+async function handleContactUs(req, res, next) {
+    const { name, email, message } = req.body;
+
+    if (!name || !email || !message)
+        return next(new AppError('All fields are required'));
+
+    try {
+        const subject = 'Contact Us Form';
+        const textMessage = `${name} - ${email} - ${message} <br/> ${message}`;
+        await sendMail(process.env.CONTACT_US_EMAIL, subject, textMessage);
+    } catch (error) {
+        return next(new AppError(error.message, 400));
+    }
+
+    return res.status(200).json({
+        success: true,
+        message: 'Your request has been submitted successfully',
+    });
 }
 
 export {
@@ -274,4 +292,5 @@ export {
     handleReset,
     handleChangePassword,
     handleUpdateProfile,
+    handleContactUs,
 };

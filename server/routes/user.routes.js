@@ -9,6 +9,7 @@ import {
     handleReset,
     handleChangePassword,
     handleUpdateProfile,
+    handleContactUs,
 } from '../controllers/user.controller.js';
 import { isLoggedIn } from '../middlewares/auth.middleware.js';
 import upload from '../middlewares/multer.middleware.js';
@@ -21,5 +22,6 @@ router.post('/forgot', handleForgot);
 router.get('/reset/:resetToken', handleReset);
 router.post('/change', isLoggedIn, handleChangePassword);
 router.put('/update', isLoggedIn, upload.single('avatar'), handleUpdateProfile);
+router.post('/contact', handleContactUs);
 
 export default router;

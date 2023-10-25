@@ -4,6 +4,7 @@ import { BsPersonCircle } from 'react-icons/bs';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 
+import { isValidEmail, isValidPassword } from '../Helpers/regexMatcher';
 import HomeLayout from '../Layouts/HomeLayout';
 import { createAccount } from '../Redux/Slices/AuthSlice';
 
@@ -11,7 +12,6 @@ function Signup() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [previewImage, setPreviewImage] = useState('');
-    // const
     const [signupData, setSignupData] = useState({
         fullName: '',
         email: '',
@@ -55,15 +55,11 @@ function Signup() {
             toast.error('Please should be atleast 5 characters');
             return;
         }
-        if (!signupData.email.match(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/)) {
+        if (!isValidEmail(signupData.email)) {
             toast.error('Invalid email address');
             return;
         }
-        if (
-            !signupData.password.match(
-                /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/
-            )
-        ) {
+        if (!isValidPassword(signupData.password)) {
             toast.error(
                 'Password  must be  8 or greater than 8 characters long. Password must contains a number,  lower case alphabet, upper case alphabet, and special character'
             );
