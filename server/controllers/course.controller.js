@@ -36,6 +36,7 @@ const handleGetLecturesByCourseId = async function (req, res, next) {
 
 const handleCreateCourse = async function (req, res, next) {
     const { title, description, category, createdBy } = req.body;
+    console.log(title, description, category, createdBy);
     if (!title || !description || !category || !createdBy)
         return next(new AppError('All fields are required', 400));
 

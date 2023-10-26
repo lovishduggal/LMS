@@ -61,10 +61,10 @@ function HomeLayout({ children }) {
                         aria-label="close sidebar"
                         className="drawer-overlay"></label>
                     <ul className="menu p-4  w-48 sm:w-80 relative bg text-base space-y-4 h-[100vh]">
-                        <li className="w-fit absolute right-2 z-50">
+                        <li className="w-fit absolute top-8 right-2 z-50">
                             <button>
                                 <AiFillCloseCircle
-                                    size={'24'}
+                                    size={'24px'}
                                     onClick={hideDrawer}
                                 />
                             </button>
@@ -77,6 +77,11 @@ function HomeLayout({ children }) {
                                 <Link to="/admin/dashboard">
                                     Admin Dashboard
                                 </Link>
+                            </li>
+                        )}
+                        {isLoggedIn && role === 'ADMIN' && (
+                            <li>
+                                <Link to="/course/create">Create new course</Link>
                             </li>
                         )}
                         <li>
