@@ -3,12 +3,12 @@ import Payment from '../models/payment.model.js';
 import User from '../models/user.model.js';
 import { razorpay } from '../server.js';
 import crypto from 'crypto';
-import { log } from 'console';
+
 const handleGetRazorpayApiKey = (req, res) => {
     res.status(200).json({
         success: true,
         message: 'Razor API Key',
-        key: process.env.RAZORPAY_PLAN_ID,
+        key: process.env.RAZORPAY_KEY_ID,
     });
 };
 
@@ -104,6 +104,10 @@ const handleCancelSubscription = async (req, res, next) => {
         );
         user.subscription.status = cancelSubscription.status;
         await user.save();
+        return res.status(200).json({
+            success: true,
+            message: 'Unsubscribed successfully',
+        });
     } catch (error) {
         return next(new AppError(error.message, 500));
     }
@@ -147,7 +151,7 @@ const handleAllPayments = async (req, res) => {
         November: 0,
         December: 0,
     };
-    
+
     const monthlyWisePayments = allPayemnts.items.map((payment) => {
         const monthsInNumbers = new Date(payment.start_at * 1000);
         console.log(monthsInNumbers);
