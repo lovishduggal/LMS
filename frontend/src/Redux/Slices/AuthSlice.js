@@ -64,6 +64,34 @@ export const logout = createAsyncThunk('/auth/logout', async () => {
     }
 });
 
+export const updateProfile = createAsyncThunk(
+    '/user/update/profile',
+    async (data) => {
+        try {
+            let res = axiosInstance.put('user/update', data);
+            toast.promise(res, {
+                loading: 'Updating...',
+                success: (data) => {
+                    return data?.data?.message;
+                },
+                error: 'Failed to update profile',
+            });
+            res = await res;
+            return res.data;
+        } catch (err) {
+            toast.error(err.message);
+        }
+    }
+);
+
+export const getUserData = createAsyncThunk('/user/details', async () => {
+    try {
+        const res = await axiosInstance.get('/user/me');
+        return res?.data;
+    } catch (error) {
+        toast.error(error.message);
+    }
+});
 const authSlice = createSlice({
     name: 'auth',
     initialState,
@@ -86,6 +114,16 @@ const authSlice = createSlice({
                 state.data = {};
                 state.role = '';
                 state.isLoggedIn = false;
+            })
+            .addCase(getUserData.fulfilled, (state, action) => {
+                localStorage.setItem(
+                    'data',
+                    JSON.stringify(action?.payload?.user)
+                );
+                localStorage.setItem('isLoggedIn', true);
+                state.isLoggedIn = true;
+                state.data = action?.payload?.user;
+                state.role = action?.payload?.user?.role;
             });
     },
 });
