@@ -37,9 +37,7 @@ export const verifyUserPayment = createAsyncThunk(
     '/payments/verify',
     async (data) => {
         try {
-            const response = await axiosInstance.post('/payments/verify', {
-                ...data,
-            });
+            const response = await axiosInstance.post('/payments/verify', data);
             return response.data;
         } catch (error) {
             toast.error(error.message);
@@ -112,3 +110,5 @@ const razorpaySlice = createSlice({
             });
     },
 });
+
+export default razorpaySlice.reducer;

@@ -51,40 +51,35 @@ const handleVerifySubscription = async (req, res, next) => {
         razorpay_subscription_id,
         razorpay_signature,
     } = req.body;
-    try {
-        const user = await User.findById(id);
-        if (!user) {
-            return next('Unauthorized, Please Login ');
-        }
 
-        const subscriptionId = user.razorpay_subscription_id;
+    const user = await User.findById(id);
 
-        const generatedSignature = crypto
-            .createHmac('sha256', process.env.RAZORPAY_SECRET)
-            .update(`${razorpay_payment_id}| ${subscriptionId}`)
-            .digest('hex');
+    const subscriptionId = user.subscription.id;
+    
+    const generatedSignature = crypto
+        .createHmac('sha256', process.env.RAZORPAY_SECRET)
+        .update(`${razorpay_payment_id}|${subscriptionId}`)
+        .digest('hex');
 
-        if (generatedSignature !== razorpay_signature) {
-            return next(
-                new AppError('Payment is not verified, Please try again', 400)
-            );
-        }
-
-        await Payment.create({
-            razorpay_payment_id,
-            razorpay_subscription_id,
-            razorpay_signature,
-        });
-        user.subscription.status = 'active';
-        await user.save();
-
-        return res.status(200).json({
-            success: true,
-            message: 'Payment verified successfully',
-        });
-    } catch (error) {
-        return next(new AppError(error.message, 500));
+    if (generatedSignature !== razorpay_signature) {
+        return next(
+            new AppError('Payment not verified, please try again.', 400)
+        );
     }
+
+    await Payment.create({
+        razorpay_payment_id,
+        razorpay_subscription_id,
+        razorpay_signature,
+    });
+
+    user.subscription.status = 'active';
+    await user.save();
+
+    res.status(200).json({
+        success: true,
+        message: 'Payment verified successfully',
+    });
 };
 
 const handleCancelSubscription = async (req, res, next) => {
