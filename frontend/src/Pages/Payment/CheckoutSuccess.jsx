@@ -1,8 +1,18 @@
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import HomeLayout from '../../Layouts/HomeLayout';
+import { getUserData } from '../../Redux/Slices/AuthSlice';
 
 function CheckoutSuccess() {
+    const dispatch = useDispatch();
+    async function getData() {
+        await dispatch(getUserData());
+    }
+    useEffect(() => {
+        getData();
+    }, []);
     return (
         <HomeLayout>
             <div className="h-screen flex flex-col items-center justify-center">

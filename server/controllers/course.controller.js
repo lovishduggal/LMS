@@ -19,6 +19,7 @@ const handleGetAllCourses = async function (req, res, next) {
         return next(new AppError(error.message, 500));
     }
 };
+
 const handleGetLecturesByCourseId = async function (req, res, next) {
     try {
         const { id } = req.params;
@@ -82,6 +83,7 @@ const handleCreateCourse = async function (req, res, next) {
         course,
     });
 };
+
 const handleUpdateCourse = async function (req, res, next) {
     try {
         const { id } = req.params;
@@ -105,6 +107,7 @@ const handleUpdateCourse = async function (req, res, next) {
         new AppError(error.message, 500);
     }
 };
+
 const handleDeleteCourse = async function (req, res, next) {
     try {
         const { id } = req.params;
@@ -181,6 +184,7 @@ const handleLectureToCourseById = async function (req, res, next) {
         );
     }
 };
+
 export {
     handleGetAllCourses,
     handleGetLecturesByCourseId,

@@ -17,7 +17,7 @@ function CheckoutFail() {
                         Please try again or contact support.
                     </p>
                     <button className="link text-zinc-500">
-                        <Link to="/">Go to Homepage</Link>
+                        <Link to="/checkout">Go to checkout</Link>
                     </button>
                 </div>
             </div>
