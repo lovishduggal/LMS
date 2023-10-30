@@ -7,6 +7,7 @@ import ContactUs from './Pages/ContactUs';
 import CourseDescription from './Pages/Course/CourseDescription';
 import CourseList from './Pages/Course/CourseList';
 import CreateCourse from './Pages/Course/CreateCourse';
+import DisplayLectures from './Pages/Dashboard/DisplayLectures';
 import Denied from './Pages/Denied';
 import HomePage from './Pages/HomePage';
 import Login from './Pages/Login';
@@ -45,6 +46,10 @@ const App = () => {
                     <Route path="/user/profile" element={<Profile />} />
                     <Route path="/user/editprofile" element={<EditProfile />} />
                     <Route path="/checkout" element={<Checkout />} />
+                    <Route
+                        path="/course/displaylectures"
+                        element={<DisplayLectures />}
+                    />
                     <Route
                         path="/checkout/success"
                         element={<CheckoutSuccess />}

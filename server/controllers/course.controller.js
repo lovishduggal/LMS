@@ -3,7 +3,6 @@ import Course from '../models/course.model.js';
 import AppError from '../utils/error.util.js';
 import cloudinary from 'cloudinary';
 import fs from 'fs';
-import { request } from 'http';
 
 const handleGetAllCourses = async function (req, res, next) {
     try {
@@ -185,6 +184,52 @@ const handleLectureToCourseById = async function (req, res, next) {
     }
 };
 
+const removeLectureFromCourse = async (req, res, next) => {
+    const { courseId, lectureId } = req.query;
+
+    console.log(courseId);
+
+    if (!courseId) {
+        return next(new AppError('Course ID is required', 400));
+    }
+
+    if (!lectureId) {
+        return next(new AppError('Lecture ID is required', 400));
+    }
+
+    const course = await Course.findById(courseId);
+
+    if (!course) {
+        return next(new AppError('Invalid ID or Course does not exist.', 404));
+    }
+
+    const lectureIndex = course.lectures.findIndex(
+        (lecture) => lecture._id.toString() === lectureId.toString()
+    );
+
+    if (lectureIndex === -1) {
+        return next(new AppError('Lecture does not exist.', 404));
+    }
+
+    await cloudinary.v2.uploader.destroy(
+        course.lectures[lectureIndex].lecture.public_id,
+        {
+            resource_type: 'video',
+        }
+    );
+
+    course.lectures.splice(lectureIndex, 1);
+
+    course.numberOfLectures = course.lectures.length;
+
+    await course.save();
+
+    res.status(200).json({
+        success: true,
+        message: 'Course lecture removed successfully',
+    });
+};
+
 export {
     handleGetAllCourses,
     handleGetLecturesByCourseId,
@@ -192,4 +237,5 @@ export {
     handleUpdateCourse,
     handleDeleteCourse,
     handleLectureToCourseById,
+    removeLectureFromCourse,
 };

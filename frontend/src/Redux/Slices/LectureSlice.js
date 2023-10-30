@@ -53,8 +53,9 @@ export const deleteCourseLecture = createAsyncThunk(
     '/course/lecture/delete',
     async (data) => {
         // lovish we don't have route to the backend.
+
         try {
-            const response = axiosInstance.post(
+            const response = axiosInstance.delete(
                 `/courses?courseId=${data.courseId}&lectureId=${data.lectureId}`
             );
             toast.promise(response, {
