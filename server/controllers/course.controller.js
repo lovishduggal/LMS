@@ -184,10 +184,8 @@ const handleLectureToCourseById = async function (req, res, next) {
     }
 };
 
-const removeLectureFromCourse = async (req, res, next) => {
+const handleRemoveLectureFromCourse = async (req, res, next) => {
     const { courseId, lectureId } = req.query;
-
-    console.log(courseId);
 
     if (!courseId) {
         return next(new AppError('Course ID is required', 400));
@@ -220,7 +218,7 @@ const removeLectureFromCourse = async (req, res, next) => {
 
     course.lectures.splice(lectureIndex, 1);
 
-    course.numberOfLectures = course.lectures.length;
+    course.numbersOfLectures = course.lectures.length;
 
     await course.save();
 
@@ -237,5 +235,5 @@ export {
     handleUpdateCourse,
     handleDeleteCourse,
     handleLectureToCourseById,
-    removeLectureFromCourse,
+    handleRemoveLectureFromCourse,
 };

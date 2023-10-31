@@ -23,6 +23,7 @@ function DisplayLectures() {
     async function onLectureDelete(courseId, lectureId) {
         await dispatch(deleteCourseLecture({ courseId, lectureId }));
         getLectures();
+        navigate('/courses');
     }
 
     useEffect(() => {
@@ -103,12 +104,12 @@ function DisplayLectures() {
                                             </p>
                                             {role === 'ADMIN' && (
                                                 <button
-                                                    onClick={() =>
+                                                    onClick={() => {
                                                         onLectureDelete(
                                                             state?._id,
                                                             lecture?._id
-                                                        )
-                                                    }
+                                                        );
+                                                    }}
                                                     className="btn-accent px-2 py-1 rounded-md font-semibold text-sm">
                                                     Delete lecture
                                                 </button>

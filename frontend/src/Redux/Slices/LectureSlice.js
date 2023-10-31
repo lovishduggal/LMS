@@ -52,8 +52,6 @@ export const addCourseLecture = createAsyncThunk(
 export const deleteCourseLecture = createAsyncThunk(
     '/course/lecture/delete',
     async (data) => {
-        // lovish we don't have route to the backend.
-
         try {
             const response = axiosInstance.delete(
                 `/courses?courseId=${data.courseId}&lectureId=${data.lectureId}`
@@ -77,11 +75,9 @@ const lectureSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(getCourseLectures.fulfilled, (state, action) => {
-                console.log(action);
                 state.lectures = action?.payload?.lectures;
             })
             .addCase(addCourseLecture.fulfilled, (state, action) => {
-                console.log(action);
                 state.lectures = action?.payload?.course?.lectures;
             });
     },

@@ -7,7 +7,7 @@ import {
     handleUpdateCourse,
     handleDeleteCourse,
     handleLectureToCourseById,
-    removeLectureFromCourse,
+    handleRemoveLectureFromCourse,
 } from '../controllers/course.controller.js';
 import { authorizedRoles, isLoggedIn } from '../middlewares/auth.middleware.js';
 import upload from '../middlewares/multer.middleware.js';
@@ -21,7 +21,11 @@ router
         upload.single('thumbnail'),
         handleCreateCourse
     )
-    .delete(isLoggedIn, authorizedRoles('ADMIN'), removeLectureFromCourse);
+    .delete(
+        isLoggedIn,
+        authorizedRoles('ADMIN'),
+        handleRemoveLectureFromCourse
+    );
 
 router
     .route('/:id')
