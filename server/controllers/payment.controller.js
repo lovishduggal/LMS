@@ -119,14 +119,13 @@ const handleCancelSubscription = async (req, res, next) => {
     });
 
     user.subscription.id = undefined;
-    user.subscription.status = undefined; 
+    user.subscription.status = undefined;
 
     await user.save();
     await Payment.deleteOne({
         razorpay_subscription_id: subscriptionId,
     });
 
-    // Send the response
     res.status(200).json({
         success: true,
         message: 'Subscription canceled successfully',
@@ -134,10 +133,9 @@ const handleCancelSubscription = async (req, res, next) => {
 };
 
 const handleAllPayments = async (req, res) => {
-    //! This route and authorizeSubscribe middleware are assignments to us.
     const { count, skip } = req.query;
 
-    const allPayemnts = await razorpay.subscriptions.all({
+    const allPayments = await razorpay.subscriptions.all({
         count: count || 10,
         skip: skip || 0,
     });
@@ -172,7 +170,7 @@ const handleAllPayments = async (req, res) => {
         December: 0,
     };
 
-    const monthlyWisePayments = allPayemnts.items.map((payment) => {
+    const monthlyWisePayments = allPayments.items.map((payment) => {
         const monthsInNumbers = new Date(payment.start_at * 1000);
         console.log(monthsInNumbers);
         return monthNames[monthsInNumbers.getMonth()];
@@ -191,11 +189,10 @@ const handleAllPayments = async (req, res) => {
     Object.keys(finalMonths).forEach((monthName) => {
         monthlySalesRecord.push(finalMonths[monthName]);
     });
-    console.log(finalMonths);
-    console.log(monthlySalesRecord);
     return res.status(200).json({
         status: true,
-        allPayemnts,
+        message: 'All payments fetched successfully',
+        allPayments,
         finalMonths,
         monthlySalesRecord,
     });
