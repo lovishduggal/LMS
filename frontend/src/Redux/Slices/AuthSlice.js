@@ -87,6 +87,67 @@ export const updateProfile = createAsyncThunk(
     }
 );
 
+export const changePassword = createAsyncThunk(
+    '/user/change/password',
+    async (data) => {
+        try {
+            let res = axiosInstance.post('user/change', data);
+            toast.promise(res, {
+                loading: 'Changing...',
+                success: (data) => {
+                    return data?.data?.message;
+                },
+                error: 'Failed to change password',
+            });
+            res = await res;
+            return res.data;
+        } catch (err) {
+            toast.error(err?.message);
+        }
+    }
+);
+
+export const forgotPassword = createAsyncThunk(
+    '/auth/forget/password',
+    async (data) => {
+        try {
+            let res = axiosInstance.post('user/forgot', data);
+            toast.promise(res, {
+                loading: 'Wait! reset password link is generating...',
+                success: (data) => {
+                    return data?.data?.message;
+                },
+                error: 'Failed to generate link',
+            });
+            res = await res;
+            return res.data;
+        } catch (err) {
+            toast.error(err?.message);
+        }
+    }
+);
+
+export const resetPassword = createAsyncThunk(
+    '/auth/reset/password',
+    async (data) => {
+        console.log(data);
+        try {
+            let res = axiosInstance.post(`user/reset/${data.id}`, data);
+            toast.promise(res, {
+                loading: 'Wait! resetting the password...',
+                success: (data) => {
+                    return data?.data?.message;
+                },
+                error: 'Failed to reset the password',
+            });
+            res = await res;
+            return res.data;
+        } catch (err) {
+            toast.error(err?.message);
+        }
+    }
+);
+
 export const getUserData = createAsyncThunk('/user/details', async () => {
     try {
         const res = await axiosInstance.get('/user/me');

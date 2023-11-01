@@ -14,6 +14,9 @@ import Denied from './Pages/Denied';
 import HomePage from './Pages/HomePage';
 import Login from './Pages/Login';
 import NotFound from './Pages/NotFound';
+import ChangePassword from './Pages/Password/ChangePassword';
+import ForgetPassword from './Pages/Password/ForgetPassword';
+import ResetPassword from './Pages/Password/ResetPassword';
 import Checkout from './Pages/Payment/Checkout';
 import CheckoutFail from './Pages/Payment/CheckoutFail';
 import CheckoutSuccess from './Pages/Payment/CheckoutSuccess';
@@ -30,6 +33,8 @@ const App = () => {
                 <Route path="/courses" element={<CourseList />} />
                 <Route path="/contact" element={<ContactUs />} />
                 <Route path="/denied" element={<Denied />} />
+                <Route path="/forgetpassword" element={<ForgetPassword />} />
+                <Route path="/reset/:id" element={<ResetPassword />} />
 
                 <Route
                     path="/course/description"
@@ -56,6 +61,10 @@ const App = () => {
                     <Route
                         path="/course/displaylectures"
                         element={<DisplayLectures />}
+                    />
+                    <Route
+                        path="/changepassword"
+                        element={<ChangePassword />}
                     />
                     <Route
                         path="/checkout/success"

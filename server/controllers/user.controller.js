@@ -138,7 +138,6 @@ const handleProfile = async (req, res, next) => {
 const handleForgot = async (req, res, next) => {
     const { email } = req.body;
     if (!email) return next(new AppError('Email  is required', 400));
-
     const user = await User.findOne({ email });
     if (!user) return next(new AppError('Email is nor registered', 400));
 
@@ -158,15 +157,14 @@ const handleForgot = async (req, res, next) => {
         user.forgotPasswordToken = undefined;
         user.forgotPasswordExpiry = undefined;
         await user.save();
-
         return next(new AppError(error.message, 500));
     }
 };
 
 const handleReset = async (req, res, next) => {
     const { resetToken } = req.params;
-
     const { password } = req.body;
+
     if (!password) return next(new AppError('Password field required', 400));
 
     const forgotPasswordToken = crypto
@@ -178,7 +176,6 @@ const handleReset = async (req, res, next) => {
         forgotPasswordToken,
         forgotPasswordExpiry: { $gt: Date.now() },
     });
-    console.log('user', user);
 
     if (!user)
         return next(
@@ -205,8 +202,9 @@ async function handleChangePassword(req, res, next) {
 
     const user = await User.findById(id).select('+password');
     if (!user) return next(new AppError('User does not exit', 400));
-
+    console.log(oldPassword, newPassword);
     const isPasswordMatched = await user.comparePassword(oldPassword);
+    console.log(isPasswordMatched);
     if (!isPasswordMatched)
         return next(new AppError('Invalid old password', 400));
 

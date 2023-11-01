@@ -20,7 +20,7 @@ router.post('/login', handleLogin);
 router.get('/logout', handleLogout);
 router.get('/me', isLoggedIn, handleProfile);
 router.post('/forgot', handleForgot);
-router.get('/reset/:resetToken', handleReset);
+router.post('/reset/:resetToken', handleReset);
 router.post('/change', isLoggedIn, handleChangePassword);
 router.put('/update', isLoggedIn, upload.single('avatar'), handleUpdateProfile);
 router.post('/contact', handleContactUs);

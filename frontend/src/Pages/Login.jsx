@@ -91,6 +91,14 @@ function Login() {
                             onChange={handleUserInput}
                             value={loginData.password}
                         />
+                        <Link
+                            to="/forgetpassword"
+                            className="flex justify-end items-center">
+                            {' '}
+                            <span className="text-[12px] link text-accent cursor-pointer">
+                                Forget Password?
+                            </span>
+                        </Link>
                     </div>
                     <button
                         type="submit"
